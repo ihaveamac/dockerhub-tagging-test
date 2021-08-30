@@ -1,12 +1,14 @@
 #!/bin/bash
-VERSION="1.3.10"
-
-TAGS=$(echo $VERSION | sed -e 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\1.\2.\3 \1.\2 \1/')
-echo $TAGS
-for f in $TAGS
-do
-	NEW_IMAGE_NAME="$DOCKER_REPO:$f"
-	echo "Tagging: $DOCKER_REPO:$f"
-	docker tag $IMAGE_NAME $NEW_IMAGE_NAME
-	docker push $NEW_IMAGE_NAME
-done
+echo "CURRENT TAG: $DOCKER_TAG"
+if [ $DOCKER_TAG != 'dev' ]
+then
+	TAGS=$(echo $DOCKER_TAG | sed -e 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\1.\2 \1/')
+	echo $TAGS
+	for f in $TAGS latest 
+	do
+		NEW_IMAGE_NAME="$DOCKER_REPO:$f"
+		echo "Tagging: $DOCKER_REPO:$f"
+		docker tag $IMAGE_NAME $NEW_IMAGE_NAME
+		docker push $NEW_IMAGE_NAME
+	done
+fi
